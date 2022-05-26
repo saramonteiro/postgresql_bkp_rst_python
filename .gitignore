@@ -1,0 +1,3 @@
+myenv/
+.pgpass*
+*.dump

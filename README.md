@@ -1,0 +1,41 @@
+- INTRUÇÕES DE COMO USAR O SCRIPT EM PYTHON PARA FAZER BACKUP E RESTAURAR BANCOS DE DADOS POSTGREE
+    - Instale Python v 3.8.10 (VER ISSO AQUI)
+    - Crie um ambiente virtual.
+        - `python3 -m venv myenv`
+    - Instale as dependências a partir de `requirements.txt`
+        - `pip install -r requirements.txt`
+    - Instale o pacote cliente PostgreSQL para garantir que os comandos como `pg_dump` e `pg_restore` estejam acessíveis pelo script.
+        - LINUX (Ubuntu): 
+        - `sudo apt-get install postgresql-client`
+        - WINDOWS: Download the installer (https://www.postgresql.org/download/windows/)
+    - Configure os arquivos de senhas.
+        - Crie um arquivo de senha (.pgpass_bkp) e entre com as informações de conexão do banco de dados do qual deseja se fazer o backup.
+        - Crie um arquivo de senha (.pgpass_rst) e entre com as informações de conexão do banco de dados do qual deseja se fazer o restore.
+        - Crie um arquivo de senha (.pgpass_postgres) e entre com as informações de conexão do banco de dados de manutenção do mesmo servidor do banco de dados onde será feito o restore. Este banco é normalmente usado para criar e deletar um banco.
+        - O formato das informações que deverão estar nestes arquivos é o seguinte:
+        - `hostname:port:database:username:password`
+        - Example: `testeprd.postgres.database.azure.com:5432:testdb:testprduser@testeprd:MyPass`
+        - Atribua permissão de leitura e escrita aos arquivos exclusiva ao usuário owner.
+        - `sudo chmod 600 .pgpass_bkp`
+        - `sudo chmod 600 .pgpass_rst`
+        - `sudo chmod 600 .pgpass_postgres`
+    - Configure variáveis de ambiente:
+        - Os bancos de dados para PostgreSQL no Azure habilitam por padrão conexões TLS/SSL. Caso o seu banco 
+            esteja habilitando mas não esteja configurado, atribua à variável de ambiente PGSSLMODE o valor require.  
+        - `export PGSSLMODE=require`
+        - Indique o caminho para os arquivos .pgpass.
+        - `export PGPASS_BKP_PATH='/home/.../.pgpass_prd'` (Path o arquivo pgpass do banco de backup)
+        - `export PGPASS_RST_PATH='/home/.../.pgpass_dev` (Path o arquivo pgpass do banco de restore)
+        - `export PGPASS_POSTGRES_PATH='/home/.../.pgpass_postgres` (Path o arquivo pgpass do banco de manutenção)
+        - (Opcional, para facilitar a execução do script armazene as informações de conexão do banco nas seguintes variáveis de ambiente no formato demonstrado abaixo)
+        - `export BACKUP='<hostname>:<port>:<db>:<user>'`
+        - `export RESTORE='<hostname>:<port>:<db>:<user>'`
+        - Opcional, especifique o caminho para o arquivo de dump, pode ser útil quando for realizar apenas restore. Caso não seja fornecido, será criado um arquivo chamado mybackup.dump no diretório de execução.
+        - `export DUMPFILE='<path to file>'`
+        - Finalmente, execute o script:
+        - `python3 updatedb.py -b <hostname>:<port>:<db>:<user> -r <hostname>:<port>:<db>:<user> -d`
+        - or
+        - `python3 updatedb.py -b $BACKUP -r $RESTORE -d`
+        - Consulte as opções disponíveis:
+        - `python3 updatedb.py --help`
+
