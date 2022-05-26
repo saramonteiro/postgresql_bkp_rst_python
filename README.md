@@ -1,5 +1,5 @@
 - INTRUÇÕES DE COMO USAR O SCRIPT EM PYTHON PARA FAZER BACKUP E RESTAURAR BANCOS DE DADOS POSTGREE
-    - Instale Python v 3.8.10 (VER ISSO AQUI)
+    - Instale Python. Testado nas versões v 3.8.10 e v 3.10.4. Deve funcionar em outras versões.
     - Crie um ambiente virtual.
         - `python3 -m venv myenv`
     - Instale as dependências a partir de `requirements.txt`
